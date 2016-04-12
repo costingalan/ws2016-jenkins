@@ -31,9 +31,9 @@ pushd "$buildArea"
 if (Test-Path "$woitDir") {
     Remove-Item -Recurse -Force "$woitDir"
 }
-git clone -b devel https://github.com/costingalan/windows-openstack-imaging-tools 
+git clone -b devel_jenkins https://github.com/costingalan/windows-openstack-imaging-tools 
 pushd "$woitDir"
-git checkout devel
+git checkout devel_jenkins
 git submodule update --init #for the curtin and update modules
 popd
 
