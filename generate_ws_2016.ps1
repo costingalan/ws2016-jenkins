@@ -42,6 +42,7 @@ if (Test-Path "$scriptDir") {
 }
 git clone https://github.com/costingalan/ws2016-jenkins 
 pushd "$scriptDir"
+pwd
 & generate_script.ps1 | Tee-Object -FilePath "$logPath"
 popd
 
