@@ -4,10 +4,10 @@
 # for generating latest windows images.
 
 $baseDir = "C:\generate_windows_images"
-$logDir = Join-Path -Path "$baseDir" -ChildPath "logs"
-$woitDir = Join-Path -Path "$baseDir" -ChildPath "windows-openstack-imaging-tools"
-$scriptDir = Join-Path -Path "$baseDir" -ChildPath "ws2016-jenkins"
 $buildArea = Join-Path -Path "$baseDir" -ChildPath "build_area"
+$logDir = Join-Path -Path "$buildArea" -ChildPath "logs"
+$woitDir = Join-Path -Path "$buildArea" -ChildPath "windows-openstack-imaging-tools"
+$scriptDir = Join-Path -Path "$buildArea" -ChildPath "ws2016-jenkins"
 $isoDir = Join-Path -Path "$baseDir" -ChildPath "generated_images" 
 
 $logName = (Get-Date).ToString('ddMMyyy') + '-' + "$env:BUILD_NUMBER"
