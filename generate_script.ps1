@@ -1,3 +1,5 @@
+pushd "$woitDir"
+
 if (Get-Module WinImageBuilder) {
     Remove-Module WinImageBuilder
 }
@@ -11,14 +13,11 @@ $wimFilePath = "${driveLetter}:\sources\install.wim"
 # Check what images are supported in this Windows ISO
 $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
 
-$imageName = (Get-Date).ToString('ddMMyyy') + '-' + $env:BUILD_NUMBER + '-dd'
-
-$targetPath = Join-Path -Path "C:\generate_windows_images\generated_images" -ChildPath "$imageName"
-
 # Choosing the standard edition
 $image = $images[1]
 
 New-MaaSImage -WimFilePath $wimFilePath -ImageName $image.ImageName`
 -MaaSImagePath $targetPath -SizeBytes 45GB -Memory 8GB `
 -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:$true `
--InstallUpdates:$true -ExtraFeatures:@() 
+-InstallUpdates:$true -ExtraFeatures:@()
+popd
