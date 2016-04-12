@@ -6,7 +6,6 @@ if (Get-Module WinImageBuilder) {
 Import-Module .\WinImageBuilder.psm1
 
 #This is the content of your Windows ISO
-$isoPath = Join-Date -ChildPath $env:isoName -Path $env:folder
 $driveLetter = (Mount-DiskImage $isoPath -PassThru | Get-Volume).DriveLetter 
 $wimFilePath = "${driveLetter}:\sources\install.wim"
 

@@ -9,7 +9,7 @@ $logDir = Join-Path -Path "$buildArea" -ChildPath "logs"
 $woitDir = Join-Path -Path "$buildArea" -ChildPath "windows-openstack-imaging-tools"
 $scriptDir = Join-Path -Path "$buildArea" -ChildPath "ws2016-jenkins"
 $isoDir = Join-Path -Path "$baseDir" -ChildPath "generated_images" 
-
+$isoPath = Join-Path -ChildPath "$env:isoName" -Path "$env:folder"
 $logName = (Get-Date).ToString('ddMMyyy') + '-' + "$env:BUILD_NUMBER"
 $logPath = Join-Path -Path "$logDir" -ChildPath "$logName"
 $imageName = (Get-Date).ToString('ddMMyyy') + '-' + "$env:BUILD_NUMBER" + '-dd'
