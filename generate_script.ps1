@@ -20,4 +20,5 @@ $image = $images[1]
 
 New-MaaSImage -WimFilePath $wimFilePath -ImageName $image.ImageName`
 -MaaSImagePath $targetPath -SizeBytes 45GB -Memory 8GB `
--CpuCores 4 -DiskLayout BIOS -RunSysprep -
+-CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:$true `
+-InstallUpdates:$true -ExtraFeatures:@() 
