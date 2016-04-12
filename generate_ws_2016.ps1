@@ -15,6 +15,18 @@ $logPath = Join-Path -Path "$logDir" -ChildPath "$logName"
 $imageName = (Get-Date).ToString('ddMMyyy') + '-' + "$env:BUILD_NUMBER" + '-dd'
 $targetPath = Join-Path -Path "$isoDir" -ChildPath "$imageName"
 
+Write-Host "START VARIABLES"
+$logName
+$logPath
+$imageNa
+$targetPath
+$baseDir
+$logDirr
+$woitDir
+$scriptDir
+$buildArea
+$isoDir
+Write-Host "END VARIABLES"
 pushd "$buildArea"
 if (Test-Path "$woitDir") {
     Remove-Item -Recurse -Force "$woitDir"
