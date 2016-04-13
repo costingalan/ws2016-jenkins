@@ -13,7 +13,8 @@ $wimFilePath = "${driveLetter}:\sources\install.wim"
 $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
 
 $Params = @() #in this array we will add our parameters
-
+$Function = @('New-WindowsOnlineImage -Type') #this will be the switch where we choose which type of image we generate
+ 
 # Choosing to install the Microsoft-Hyper-V role
 if ($env:installHyperV -eq 'NO') {
     $ExtraFeatures = @()
@@ -47,12 +48,20 @@ if ($env:persistDriver -eq 'YES') {
     $PersistDriverInstall = $true
 }
 
+If ($env:imageType -eq 'MAAS') {
+    $Function += '"MAAS"'
+} Elseif ($env:imageType -eq 'KVM') {
+      $Function += '"KVM"'
+  } Elseif ($env:imageType -eq 'Hyper-V') {
+        $Function += '"HYPER-V"'
+    }
+$finalFunction = $Function -join ' '
 $finalParams = $Params -join ' '
 
 try {
     $finalParams
     Write-Host "Starting the image generation..."
-    New-MaaSImage -WimFilePath $wimFilePath -ImageName $image.ImageName`
+    $finalFunction -WimFilePath $wimFilePath -ImageName $image.ImageName`
     -MaaSImagePath $targetPath -SizeBytes 45GB -Memory 8GB `
     -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:$true `
     -InstallUpdates:$true $finalParams
