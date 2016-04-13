@@ -58,6 +58,9 @@ If ($env:imageType -eq 'MAAS') {
 $finalFunction = $Function -join ' '
 $finalParams = $Params -join ' '
 
+$finalFunction
+$finalParams
+
 try {
     $finalParams
     Write-Host "Starting the image generation..."
