@@ -16,7 +16,6 @@ $imageName = (Get-Date).ToString('ddMMyyy') + '-' + "$env:BUILD_NUMBER" + '-dd'
 $targetPath = Join-Path -Path "$isoDir" -ChildPath "$imageName"
 $virtPath = Join-Path -Path "$baseDir" -ChildPath "optional_images\virtio-win-0.1.102.iso"
 
-
 pushd "$buildArea"
 if (Test-Path "$woitDir") {
     Remove-Item -Recurse -Force "$woitDir"

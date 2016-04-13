@@ -12,9 +12,11 @@ $wimFilePath = "${driveLetter}:\sources\install.wim"
 # Check what images are supported in this Windows ISO
 $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
 
+$Params = @() #in this array we will add our parameters
+
 # Choosing to install the Microsoft-Hyper-V role
 if ($env:installHyperV -eq 'NO') {
-    $Features = @()
+    $ExtraFeatures = @()
 }
 
 # Choosing the type of image
@@ -24,18 +26,41 @@ if ($env:imageEdition -eq 'CORE') {
     $image = $images[1]
 }
 
+if ($env:installVirtIODrivers -eq 'YES') {
+    $Params += '-VirtIOISOPath $virtPath'
+}
+
+if ($env:installUpdates -eq 'YES') {
+    $Params += '-InstallUpdates:$true'
+}
+
+if (($env:purgeUpdates -eq 'YES') {
+    if ($env:installUpdates -eq 'YES')) {
+        $Params += '-PurgeUpdates:$true'
+    } else {
+        Write-Warning "You have added purgeUpdates to yes but installUpdates is no."
+        Write-Warning "Will not purge the updates"
+    }
+}
+
+if ($env:persistDriver -eq 'YES') {
+    $PersistDriverInstall = $true
+}
+
+$finalParams = $Params -join ' '
 
 try {
     Write-Host "Starting the image generation..."
     New-MaaSImage -WimFilePath $wimFilePath -ImageName $image.ImageName`
     -MaaSImagePath $targetPath -SizeBytes 45GB -Memory 8GB `
     -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:$true `
-    -InstallUpdates:$true -ExtraFeatures $Features -VirtIOISOPath $virtPath
+    -InstallUpdates:$true $Params
     popd
     Write-Host "Finished the image generation."
 } catch {
     Write-Host "Image generation has failed."
     Write-Host $_
-} finally { 
+} finally {
+    pushd "$baseDir" 
     Dismount-DiskImage $isoPath
 }
