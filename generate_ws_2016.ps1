@@ -20,6 +20,7 @@ if (Test-Path "$woitDir") {
     Remove-Item -Recurse -Force "$woitDir"
 }
 git clone -b devel_jenkins https://github.com/costingalan/windows-openstack-imaging-tools 
+ls
 pushd "$woitDir"
 git checkout devel_jenkins
 git submodule update --init #for the curtin and update modules

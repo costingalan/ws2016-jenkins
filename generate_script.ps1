@@ -1,3 +1,5 @@
+$woitDir
+ls $buildArea
 pushd "$woitDir"
 
 if (Get-Module WinImageBuilder) {
