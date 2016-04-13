@@ -14,7 +14,7 @@ try {
     $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
     
     $Params = @() #in this array we will add our parameters
-    $Function = @(New-WindowsOnlineImage -Type) #this will be the switch where we choose which type of image we generate
+    $Function = @(New-WindowsOnlineImage ) #this will be the switch where we choose which type of image we generate
      
     # Choosing to install the Microsoft-Hyper-V role
     If ($env:installHyperV -eq 'NO') {
@@ -50,11 +50,11 @@ try {
     }
     
     If ($env:imageType -eq 'MAAS') {
-        $Function += '"MAAS"'
+        $Function += '-Type "MAAS"'
     } Elseif ($env:imageType -eq 'KVM') {
-          $Function += '"KVM"'
+          $Function += '-Type "KVM"'
       } Elseif ($env:imageType -eq 'Hyper-V') {
-            $Function += '"HYPER-V"'
+            $Function += '-Type "HYPER-V"'
         }
     $finalFunction = $Function -join ' '
     $finalParams = $Params -join ' '
