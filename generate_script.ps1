@@ -50,11 +50,12 @@ if ($env:persistDriver -eq 'YES') {
 $finalParams = $Params -join ' '
 
 try {
+    $finalParams
     Write-Host "Starting the image generation..."
     New-MaaSImage -WimFilePath $wimFilePath -ImageName $image.ImageName`
     -MaaSImagePath $targetPath -SizeBytes 45GB -Memory 8GB `
     -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:$true `
-    -InstallUpdates:$true $Params
+    -InstallUpdates:$true $finalParams
     popd
     Write-Host "Finished the image generation."
 } catch {

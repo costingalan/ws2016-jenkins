@@ -41,6 +41,7 @@ try {
     Write-Host $_
 } finally {
     Write-Host "Cleaning up woitDir and scriptDir"
+    cd "C:\"
     Remove-Item -Recurse -Force $woitDir
     Remove-Item -Recurse -Force $scriptDir
 }
