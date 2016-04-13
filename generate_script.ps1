@@ -34,8 +34,8 @@ if ($env:installUpdates -eq 'YES') {
     $Params += '-InstallUpdates:$true'
 }
 
-if (($env:purgeUpdates -eq 'YES') {
-    if ($env:installUpdates -eq 'YES')) {
+if ($env:purgeUpdates -eq 'YES') {
+    if ($env:installUpdates -eq 'YES') {
         $Params += '-PurgeUpdates:$true'
     } else {
         Write-Warning "You have added purgeUpdates to yes but installUpdates is no."
