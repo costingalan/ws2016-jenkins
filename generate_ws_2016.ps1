@@ -33,7 +33,8 @@ try {
     git clone https://github.com/costingalan/ws2016-jenkins "ws2016-jenkins-$env:BUILD_NUMBER"
     ls
     pushd "$scriptDir"
-    .\generate_script.ps1 | Tee-Object -FilePath "after-ws-$logPath"
+    $logPath
+    .\generate_script.ps1 | Tee-Object -FilePath "$logPath"
     popd
     
     popd
