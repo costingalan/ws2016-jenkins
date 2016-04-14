@@ -11,6 +11,7 @@ $scriptDir = Join-Path -Path "$buildArea" -ChildPath "ws2016-jenkins-$env:BUILD_
 $logName = (Get-Date).ToString('ddMMyyy') + '-' + "$env:BUILD_NUMBER" + '.txt'
 $logPath = Join-Path -Path "$logDir" -ChildPath "$logName"
 $imageName = (Get-Date).ToString('ddMMyyy') + '-' + "$env:BUILD_NUMBER" + '-dd'
+$isoDir = Join-Path -Path "$baseDir" -ChildPath "generated_images"
 $targetPath = Join-Path -Path "$isoDir" -ChildPath "$imageName"
 $virtPath = Join-Path -Path "$baseDir" -ChildPath "optional_images\virtio-win-0.1.102.iso"
 try {
