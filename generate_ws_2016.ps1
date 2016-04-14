@@ -21,16 +21,17 @@ try {
         Remove-Item -Recurse -Force "$woitDir"
     }
     git clone -b devel_jenkins https://github.com/costingalan/windows-openstack-imaging-tools "woit-$env:BUILD_NUMBER" 
-    ls
     pushd "$woitDir"
     git checkout devel_jenkins
     git submodule update --init #for the curtin and update modules
     popd
-    
+    ls
     if (Test-Path "$scriptDir") {
+        Write-Host "Removing $scriptDir"
         Remove-Item -Force -Recurse "$scriptDir"
     }
     git clone https://github.com/costingalan/ws2016-jenkins "ws2016-jenkins-$env:BUILD_NUMBER"
+    ls
     pushd "$scriptDir"
     .\generate_script.ps1 | Tee-Object -FilePath "after-ws-$logPath"
     popd
