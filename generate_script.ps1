@@ -2,12 +2,10 @@ $baseDir = "C:\generate_windows_images"
 $buildArea = Join-Path -Path "$baseDir" -ChildPath "build_area"
 $woitDir = Join-Path -Path "$buildArea" -ChildPath "woit-$env:BUILD_NUMBER"
 try {
-    cd "$woitDir"
-    
     If (Get-Module WinImageBuilder) {
         Remove-Module WinImageBuilder
     }
-    Import-Module .\WinImageBuilder.psm1
+    Import-Module "$woitDir\WinImageBuilder.psm1"
     Write-Host "Imported Module"
     #This is the content of your Windows ISO
     $driveLetter = (Mount-DiskImage $env:isoPath -PassThru | Get-Volume).DriveLetter 
@@ -69,12 +67,10 @@ try {
     Write-Host "Starting the image generation..."
     $finalFunction += "-WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes 45GB -Memory 8GB -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:$true -InstallUpdates:$true $finalParams" 
     & $finalFunction
-    cd \
     Write-Host "Finished the image generation."
 } catch {
     Write-Host "Image generation has failed."
     Write-Host $_
 } finally {
-    cd \ 
     Dismount-DiskImage $isoPath
 }
