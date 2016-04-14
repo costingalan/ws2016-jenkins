@@ -8,14 +8,14 @@ try {
         Remove-Module WinImageBuilder
     }
     Import-Module .\WinImageBuilder.psm1
-    
+    Write-Host "Imported Module"
     #This is the content of your Windows ISO
     $driveLetter = (Mount-DiskImage $isoPath -PassThru | Get-Volume).DriveLetter 
     $wimFilePath = "${driveLetter}:\sources\install.wim"
-    
+    Write-Host "Mounted iso"
     # Check what images are supported in this Windows ISO
     $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
-    
+    Write-Host "Get-WimFileImage"
     $Params = @() #in this array we will add our parameters
     $Function = @(New-WindowsOnlineImage ) #this will be the switch where we choose which type of image we generate
      
@@ -23,7 +23,7 @@ try {
     If ($env:installHyperV -eq 'NO') {
         $ExtraFeatures = @()
     }
-    
+    Write-Host "Choosing the imageEdition"
     # Choosing the type of image
     If ($env:imageEdition -eq 'CORE') {
         $image = $images[0]
@@ -34,7 +34,8 @@ try {
     If ($env:installVirtIODrivers -eq 'YES') {
         $Params += '-VirtIOISOPath $virtPath'
     }
-    
+    Write-Host "Showing the params"
+    $Params
     If ($env:installUpdates -eq 'YES') {
         $Params += '-InstallUpdates:$true'
     }
