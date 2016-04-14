@@ -1,3 +1,6 @@
+$baseDir = "C:\generate_windows_images"
+$buildArea = Join-Path -Path "$baseDir" -ChildPath "build_area"
+$woitDir = Join-Path -Path "$buildArea" -ChildPath "woit-$env:BUILD_NUMBER"
 try {
     pushd "$woitDir"
     
