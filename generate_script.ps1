@@ -6,16 +6,15 @@ try {
         Remove-Module WinImageBuilder
     }
     Import-Module "$woitDir\WinImageBuilder.psm1"
-    Write-Host "Imported Module"
+    
     #This is the content of your Windows ISO
     $driveLetter = (Mount-DiskImage $env:isoPath -PassThru | Get-Volume).DriveLetter 
     $wimFilePath = "${driveLetter}:\sources\install.wim"
-    Write-Host "Mounted iso"
+    
     # Check what images are supported in this Windows ISO
     $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
-    Write-Host "Get-WimFileImage"
     $Params = @() #in this array we will add our parameters
-    $Function = @(New-WindowsOnlineImage ) #this will be the switch where we choose which type of image we generate
+    $Function = @() #this will be the switch where we choose which type of image we generate
      
     # Choosing to install the Microsoft-Hyper-V role
     If ($env:installHyperV -eq 'NO') {
@@ -32,7 +31,7 @@ try {
     If ($env:installVirtIODrivers -eq 'YES') {
         $Params += '-VirtIOISOPath $virtPath'
     }
-    Write-Host "Showing the params"
+
     $Params
     If ($env:installUpdates -eq 'YES') {
         $Params += '-InstallUpdates:$true'
@@ -52,11 +51,11 @@ try {
     }
     
     If ($env:imageType -eq 'MAAS') {
-        $Function += '-Type "MAAS"'
+        $Function += "MAAS"
     } Elseif ($env:imageType -eq 'KVM') {
-          $Function += '-Type "KVM"'
+          $Function += "KVM"
       } Elseif ($env:imageType -eq 'Hyper-V') {
-            $Function += '-Type "HYPER-V"'
+            $Function += "HYPER-V"
         }
     $finalFunction = $Function -join ' '
     $finalParams = $Params -join ' '
@@ -65,8 +64,7 @@ try {
     $finalParams
 
     Write-Host "Starting the image generation..."
-    $finalFunction += "-WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes 45GB -Memory 8GB -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:$true -InstallUpdates:$true $finalParams" 
-    & $finalFunction
+    New-WindowsOnlineImage -Type $finalFunction -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes 45GB -Memory 8GB -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:$true -InstallUpdates:$true $finalParams
     Write-Host "Finished the image generation."
 } catch {
     Write-Host "Image generation has failed."
