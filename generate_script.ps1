@@ -14,7 +14,6 @@ try {
     # Check what images are supported in this Windows ISO
     $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
     $Params = @() #in this array we will add our parameters
-    $Function = @() #this will be the switch where we choose which type of image we generate
      
     # Choosing to install the Microsoft-Hyper-V role
     If ($env:installHyperV -eq 'NO') {
@@ -49,22 +48,13 @@ try {
     If ($env:persistDriver -eq 'YES') {
         $PersistDriverInstall = $true
     }
-    
-    If ($env:imageType -eq 'MAAS') {
-        $Function += "MAAS"
-    } Elseif ($env:imageType -eq 'KVM') {
-          $Function += "KVM"
-      } Elseif ($env:imageType -eq 'Hyper-V') {
-            $Function += "HYPER-V"
-        }
-    $finalFunction = $Function -join ' '
+
     $finalParams = $Params -join ' '
     
-    $finalFunction
     $finalParams
 
     Write-Host "Starting the image generation..."
-    New-WindowsOnlineImage -Type $finalFunction -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes 45GB -Memory 8GB -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:$true -InstallUpdates:$true $finalParams
+    New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes 45GB -Memory 8GB -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:$true -InstallUpdates:$true $finalParams
     Write-Host "Finished the image generation."
 } catch {
     Write-Host "Image generation has failed."
