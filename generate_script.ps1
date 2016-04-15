@@ -13,7 +13,6 @@ try {
 
     # Check what images are supported in this Windows ISO
     $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
-    $Params = @() #in this array we will add our parameters
 
     # Choosing to install the Microsoft-Hyper-V role
     If ($env:installHyperV -eq 'NO') {
@@ -39,9 +38,9 @@ try {
         }
     }
 
-    $finalParams = $Params -join ' '
-
-    $finalParams
+    Write-Host "Writing all the environment variables"
+    Get-ChildItem Env:
+    Write-Host "Finished writing all environment variables"
 
     Write-Host "Starting the image generation..."
     #New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes 45GB -Memory 8GB -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:$true -InstallUpdates:$true $finalParams
