@@ -14,8 +14,6 @@ try {
     # Check what images are supported in this Windows ISO
     $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
 
-    # Choosing to install the Microsoft-Hyper-V role
-
     Write-Host "Choosing the imageEdition"
     # Choosing the type of image
     If ($env:imageEdition -eq 'CORE') {
@@ -53,7 +51,12 @@ try {
     } else {
         $env:force = $false
     }
-    
+    [System.Convert]::ToBoolean($env:force)
+    [System.Convert]::ToBoolean($env:persistDrivers)
+    [System.Convert]::ToBoolean($env:purgeUpdates)
+    [System.Convert]::ToBoolean($env:runSysprep)
+    [System.Convert]::ToBoolean($env:installUpdates)
+
     If ($env:purgeUpdates -eq '$true') {
         If ($env:installUpdates -eq '$false') {
             Write-Warning "You have purgeUpdates set to yes but installUpdates is set to no."
