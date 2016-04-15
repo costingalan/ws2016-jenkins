@@ -1,4 +1,4 @@
-Set-PSDebug -Trace 2
+#Set-PSDebug -Trace 2
 $baseDir = "C:\generate_windows_images"
 $buildArea = Join-Path -Path "$baseDir" -ChildPath "build_area"
 $logDir = Join-Path -Path "$buildArea" -ChildPath "logs"
@@ -83,6 +83,10 @@ try {
     Write-Host "Writing all the environment variables"
     Get-ChildItem Env:
     Write-Host "Finished writing all environment variables"
+    
+    Write-Host "Writing all the variables"
+    Get-Variable | Out-String
+    Write-Host "Finished writing all variables"
 
     $targetPath
 
