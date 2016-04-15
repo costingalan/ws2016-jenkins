@@ -1,3 +1,4 @@
+Set-PSDebug -Trace 1
 $baseDir = "C:\generate_windows_images"
 $buildArea = Join-Path -Path "$baseDir" -ChildPath "build_area"
 $logDir = Join-Path -Path "$buildArea" -ChildPath "logs"
