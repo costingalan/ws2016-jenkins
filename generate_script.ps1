@@ -18,7 +18,7 @@ try {
     Import-Module "$woitDir\WinImageBuilder.psm1"
 
     #This is the content of your Windows ISO
-    $driveLetter = (Mount-DiskImage $env:isoPath -PassThru | Get-Volume).DriveLetter 
+    $driveLetter = (Mount-DiskImage $finalISO -PassThru | Get-Volume).DriveLetter 
     $wimFilePath = "${driveLetter}:\sources\install.wim"
 
     # Check what images are supported in this Windows ISO

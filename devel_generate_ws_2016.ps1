@@ -15,6 +15,30 @@ $isoDir = Join-Path -Path "$baseDir" -ChildPath "generated_images"
 $targetPath = Join-Path -Path "$isoDir" -ChildPath "$imageName"
 $virtPath = Join-Path -Path "$baseDir" -ChildPath "optional_images\virtio-win-0.1.102.iso"
 try {
+
+    If ((!$env:remoteISOName) -and (!$env:localISO)) {
+        Write-Warning "No remote or local ISO specified. Exiting..."
+        exit 1
+    }
+
+    If (($env:remoteISOName) -and ($env:localISO)) {
+        Write-Warning "Both remote and local ISO specified. Exiting..."
+        exit 1
+    }
+
+    If ($env:remoteISOName) {
+        $remoteISO = Join-Path -Path $env:remoteISODir -ChildPath $env:remoteISOName
+        pushd $build_area
+        scp $remoteISO .
+        $finalISO = Join-Path -Path $build_area -ChildPath $env:remoteISOName
+        popd
+    }
+
+    If ($env:localISO) {
+        $finalISO = $env:localISO
+    }
+
+
     pushd "$buildArea"
     if (Test-Path "$woitDir") {
         Remove-Item -Recurse -Force "$woitDir"
@@ -30,13 +54,10 @@ try {
         Remove-Item -Force -Recurse "$scriptDir"
     }
     git clone https://github.com/costingalan/ws2016-jenkins "ws2016-jenkins-$env:BUILD_NUMBER"
-    ls
     pushd "$scriptDir"
-    ls
-    $finalISO = $env:isoPath
     .\generate_script.ps1 | Tee-Object -FilePath "$logPath"
     popd
-    
+
     popd
 } catch {
     Write-Host "Pre-Image failed"
