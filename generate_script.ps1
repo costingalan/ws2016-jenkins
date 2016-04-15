@@ -32,43 +32,49 @@ try {
     }
 
     If ($env:runSysprep -eq 'YES') {
-        [boolean]$env:runSysprep = 1
+        [boolean]$runSysprep = $true
     } else {
-        [boolean]$env:runSysprep = 0
+        [boolean]$runSysprep = $false 
     }
 
     If ($env:installUpdates -eq 'YES') {
-        [boolean]$env:installUpdates = 1
+        [boolean]$installUpdates = $true
     } else {
-        [boolean]$env:installUpdates = 0
+        [boolean]$installUpdates = $false
     }
 
     If ($env:purgeUpdates -eq 'YES') {
-        [boolean]$env:purgeUpdates = 1
+        [boolean]$purgeUpdates = $true
     } else {
-        [boolean]$env:purgeUpdates = 0
+        [boolean]$purgeUpdates = $false
     }
 
     If ($env:persistDrivers -eq 'YES') {
-        [boolean]$env:persistDrivers = 1
+        [boolean]$persistDrivers = $true
     } else {
-        [boolean]$env:persistDrivers = 0
+        [boolean]$persistDrivers = $false
     }
 
     If ($env:force -eq 'YES') {
-        [boolean]$env:force = 1
+        [boolean]$force = $true
     } else {
-        [boolean]$env:force = 0
+        [boolean]$force = $false
     }
 
-    If ($env:purgeUpdates -eq '1') {
-        If ([boolean]$env:installUpdates -eq '0') {
+    If ($env:purgeUpdates -eq 'YES') {
+        If ([boolean]$installUpdates -eq '$false') {
             Write-Warning "You have purgeUpdates set to yes but installUpdates is set to no."
             Write-Warning "Will not purge the updates"
-            [boolean]$env:purgeUpdates = 0
+            [boolean]$purgeUpdates = $false
         }
     }
     
+    If ($env:persistDriver -eq 'YES') {
+        $persistDriver = $true
+    } else {
+        $persistDriver = $false
+    }
+
     If ($env:installHyperV -eq 'NO') {
         $ExtraFeatures = @()
     }
@@ -78,8 +84,7 @@ try {
     Write-Host "Finished writing all environment variables"
 
     Write-Host "Starting the image generation..."
-    #New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes 45GB -Memory 8GB -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:1 -InstallUpdates:1 $finalParams
-    New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes $env:sizeBytes -Memory $env:memory -CpuCores $env:cpuCores -DiskLayout $env:diskLayout -RunSysprep:$env:runSysprep -PurgeUpdates:$env:purgeUpdates -InstallUpdates:$env:installUpdates -Force:$env:force -PersistDriverInstall:$env:persistDriver -SwitchName $env:switchName -VirtIOISOPath $env:virtPath -ProductKey $env:productKey
+    New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $diskLayout -RunSysprep:$runSysprep -PurgeUpdates:$purgeUpdates -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver -SwitchName $env:switchName -VirtIOISOPath $env:virtPath -ProductKey $productKey
 
     Write-Host "Finished the image generation."
 } catch {
