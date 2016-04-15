@@ -32,40 +32,40 @@ try {
     }
 
     If ($env:runSysprep -eq 'YES') {
-        $env:runSysprep = 1
+        [boolean]$env:runSysprep = 1
     } else {
-        $env:runSysprep = 0
+        [boolean]$env:runSysprep = 0
     }
 
     If ($env:installUpdates -eq 'YES') {
-        $env:installUpdates = 1
+        [boolean]$env:installUpdates = 1
     } else {
-        $env:installUpdates = 0
+        [boolean]$env:installUpdates = 0
     }
 
     If ($env:purgeUpdates -eq 'YES') {
-        $env:purgeUpdates = 1
+        [boolean]$env:purgeUpdates = 1
     } else {
-        $env:purgeUpdates = 0
+        [boolean]$env:purgeUpdates = 0
     }
 
     If ($env:persistDrivers -eq 'YES') {
-        $env:persistDrivers = 1
+        [boolean]$env:persistDrivers = 1
     } else {
-        $env:persistDrivers = 0
+        [boolean]$env:persistDrivers = 0
     }
 
     If ($env:force -eq 'YES') {
-        $env:force = 1
+        [boolean]$env:force = 1
     } else {
-        $env:force = 0
+        [boolean]$env:force = 0
     }
 
     If ($env:purgeUpdates -eq '1') {
-        If ($env:installUpdates -eq '0') {
+        If ([boolean]$env:installUpdates -eq '0') {
             Write-Warning "You have purgeUpdates set to yes but installUpdates is set to no."
             Write-Warning "Will not purge the updates"
-            $env:purgeUpdates = 0
+            [boolean]$env:purgeUpdates = 0
         }
     }
     
