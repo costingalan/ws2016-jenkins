@@ -89,6 +89,9 @@ try {
     Write-Host "Finished writing all variables"
 
     $sizeBytes = $env:sizeBytes.ToString() + 'GB'
+    $memory = $env:memory.ToString() + 'GB'
+    $cpuCores = $env:CpuCores.ToString()
+
     Write-Host "Starting the image generation..."
     New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes 45GB -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout -RunSysprep:$runSysprep -PurgeUpdates:$purgeUpdates -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver -SwitchName $env:switchName -VirtIOISOPath $env:virtPath -ProductKey $env:productKey
 
