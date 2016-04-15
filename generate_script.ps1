@@ -88,8 +88,10 @@ try {
     Get-Variable | Out-String
     Write-Host "Finished writing all variables"
 
-   [uint64]$sizeBytes = $env:sizeBytes + 'GB'
-   [uint64]$memory = $env:memory + 'GB'
+   [uint64]$sizeBytes = $env:sizeBytes
+   $sizeBytes = $sizeBytes * 1GB 
+   [uint64]$memory = $env:memory
+   $memory = $memory * 1GB
    [uint64]$cpuCores = $env:CpuCores
 
     Write-Host "Starting the image generation..."
