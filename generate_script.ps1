@@ -32,45 +32,40 @@ try {
     }
 
     If ($env:runSysprep -eq 'YES') {
-        $env:runSysprep = $true
+        $env:runSysprep = 1
     } else {
-        $env:runSysprep = $false
+        $env:runSysprep = 0
     }
 
     If ($env:installUpdates -eq 'YES') {
-        $env:installUpdates = $true
+        $env:installUpdates = 1
     } else {
-        $env:installUpdates = $false
+        $env:installUpdates = 0
     }
 
     If ($env:purgeUpdates -eq 'YES') {
-        $env:purgeUpdates = $true
+        $env:purgeUpdates = 1
     } else {
-        $env:purgeUpdates = $false
+        $env:purgeUpdates = 0
     }
 
     If ($env:persistDrivers -eq 'YES') {
-        $env:persistDrivers = $true
+        $env:persistDrivers = 1
     } else {
-        $env:persistDrivers = $false
+        $env:persistDrivers = 0
     }
 
     If ($env:force -eq 'YES') {
-        $env:force = $true
+        $env:force = 1
     } else {
-        $env:force = $false
+        $env:force = 0
     }
-    [System.Convert]::ToBoolean($env:force)
-    [System.Convert]::ToBoolean($env:persistDrivers)
-    [System.Convert]::ToBoolean($env:purgeUpdates)
-    [System.Convert]::ToBoolean($env:runSysprep)
-    [System.Convert]::ToBoolean($env:installUpdates)
 
-    If ($env:purgeUpdates -eq '$true') {
-        If ($env:installUpdates -eq '$false') {
+    If ($env:purgeUpdates -eq '1') {
+        If ($env:installUpdates -eq '0') {
             Write-Warning "You have purgeUpdates set to yes but installUpdates is set to no."
             Write-Warning "Will not purge the updates"
-            $env:purgeUpdates = $false
+            $env:purgeUpdates = 0
         }
     }
     
@@ -83,7 +78,7 @@ try {
     Write-Host "Finished writing all environment variables"
 
     Write-Host "Starting the image generation..."
-    #New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes 45GB -Memory 8GB -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:$true -InstallUpdates:$true $finalParams
+    #New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes 45GB -Memory 8GB -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:1 -InstallUpdates:1 $finalParams
     New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes $env:sizeBytes -Memory $env:memory -CpuCores $env:cpuCores -DiskLayout $env:diskLayout -RunSysprep:$env:runSysprep -PurgeUpdates:$env:purgeUpdates -InstallUpdates:$env:installUpdates -Force:$env:force -PersistDriverInstall:$env:persistDriver -SwitchName $env:switchName -VirtIOISOPath $env:virtPath -ProductKey $env:productKey
 
     Write-Host "Finished the image generation."
