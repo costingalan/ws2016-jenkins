@@ -89,9 +89,9 @@ try {
     Write-Host "Finished writing all variables"
 
     $targetPath
-
-    Write-Host "Starting the image generation..."
     $ImagePath = $targetPath
+    $sizeBytes
+    Write-Host "Starting the image generation..."
     New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout -RunSysprep:$runSysprep -PurgeUpdates:$purgeUpdates -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver -SwitchName $env:switchName -VirtIOISOPath $env:virtPath -ProductKey $env:productKey
 
     Write-Host "Finished the image generation."
