@@ -68,7 +68,7 @@ try {
             [boolean]$purgeUpdates = $false
         }
     }
-    
+
     If ($env:persistDriver -eq 'YES') {
         $persistDriver = $true
     } else {
@@ -83,8 +83,10 @@ try {
     Get-ChildItem Env:
     Write-Host "Finished writing all environment variables"
 
+    $targetPath
+
     Write-Host "Starting the image generation..."
-    New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout -RunSysprep:$runSysprep -PurgeUpdates:$purgeUpdates -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver -SwitchName $env:switchName -VirtIOISOPath $env:virtPath -ProductKey $productKey
+    New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout -RunSysprep:$runSysprep -PurgeUpdates:$purgeUpdates -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver -SwitchName $env:switchName -VirtIOISOPath $env:virtPath -ProductKey $env:productKey
 
     Write-Host "Finished the image generation."
 } catch {
