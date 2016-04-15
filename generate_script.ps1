@@ -42,6 +42,8 @@ try {
     Get-ChildItem Env:
     Write-Host "Finished writing all environment variables"
 
+    $env:sizeBytes = $env:sizeBytes.ToString()
+
     Write-Host "Starting the image generation..."
     #New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes 45GB -Memory 8GB -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:$true -InstallUpdates:$true $finalParams
     New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes $env:sizeBytes -Memory $env:memory -CpuCores $env:cpuCores -DiskLayout $env:diskLayout -RunSysprep:$env:runSysprep -PurgeUpdates:$env:purgeUpdates -InstallUpdates:$env:installUpdates -Force:$env:force -PersistDriverInstall:$env:persistDriver -SwitchName $env:switchName -VirtIOISOPath $env:virtPath -ProductKey $env:productKey
