@@ -6,15 +6,15 @@ try {
         Remove-Module WinImageBuilder
     }
     Import-Module "$woitDir\WinImageBuilder.psm1"
-    
+
     #This is the content of your Windows ISO
     $driveLetter = (Mount-DiskImage $env:isoPath -PassThru | Get-Volume).DriveLetter 
     $wimFilePath = "${driveLetter}:\sources\install.wim"
-    
+
     # Check what images are supported in this Windows ISO
     $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
     $Params = @() #in this array we will add our parameters
-     
+
     # Choosing to install the Microsoft-Hyper-V role
     If ($env:installHyperV -eq 'NO') {
         $ExtraFeatures = @()
@@ -26,35 +26,27 @@ try {
     } else {
         $image = $images[1]
     }
-    
+
     If ($env:installVirtIODrivers -eq 'YES') {
         $Params += '-VirtIOISOPath $virtPath'
     }
 
-    $Params
-    If ($env:installUpdates -eq 'YES') {
-        $Params += '-InstallUpdates:$true'
-    }
-    
-    If ($env:purgeUpdates -eq 'YES') {
-        If ($env:installUpdates -eq 'YES') {
-            $Params += '-PurgeUpdates:$true'
-        } else {
-            Write-Warning "You have added purgeUpdates to yes but installUpdates is no."
+    If ($env:purgeUpdates -eq '$true') {
+        If ($env:installUpdates -eq '$false') {
+            Write-Warning "You have purgeUpdates set to yes but installUpdates is set to no."
             Write-Warning "Will not purge the updates"
+            $env:purgeUpdates = $false
         }
-    }
-    
-    If ($env:persistDriver -eq 'YES') {
-        $PersistDriverInstall = $true
     }
 
     $finalParams = $Params -join ' '
-    
+
     $finalParams
 
     Write-Host "Starting the image generation..."
-    New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes 45GB -Memory 8GB -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:$true -InstallUpdates:$true $finalParams
+    #New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes 45GB -Memory 8GB -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:$true -InstallUpdates:$true $finalParams
+    New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes $env:sizeBytes -Memory $env:memory -CpuCores $env:cpuCores -DiskLayout $env:diskLayout -RunSysprep:$env:runSysprep -PurgeUpdates:$env:purgeUpdates -InstallUpdates:$env:installUpdates -Force:$env:force -PersistDriverInstall:$env:persistDriver -SwitchName $env:switchName -VirtIOISOPath $env:virtPath -ProductKey $env:productKey
+
     Write-Host "Finished the image generation."
 } catch {
     Write-Host "Image generation has failed."
