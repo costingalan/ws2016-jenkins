@@ -15,9 +15,7 @@ try {
     $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
 
     # Choosing to install the Microsoft-Hyper-V role
-    If ($env:installHyperV -eq 'NO') {
-        $ExtraFeatures = @()
-    }
+
     Write-Host "Choosing the imageEdition"
     # Choosing the type of image
     If ($env:imageEdition -eq 'CORE') {
@@ -26,10 +24,36 @@ try {
         $image = $images[1]
     }
 
-    If ($env:installVirtIODrivers -eq 'YES') {
-        $Params += '-VirtIOISOPath $virtPath'
+    If ($env:runSysprep -eq 'YES') {
+        $env:runSysprep = $true
+    } else {
+        $env:runSysprep = $false
     }
 
+    If ($env:installUpdates -eq 'YES') {
+        $env:installUpdates = $true
+    } else {
+        $env:installUpdates = $false
+    }
+
+    If ($env:purgeUpdates -eq 'YES') {
+        $env:purgeUpdates = $true
+    } else {
+        $env:purgeUpdates = $false
+    }
+
+    If ($env:persistDrivers -eq 'YES') {
+        $env:persistDrivers = $true
+    } else {
+        $env:persistDrivers = $false
+    }
+
+    If ($env:force -eq 'YES') {
+        $env:force = $true
+    } else {
+        $env:force = $false
+    }
+    
     If ($env:purgeUpdates -eq '$true') {
         If ($env:installUpdates -eq '$false') {
             Write-Warning "You have purgeUpdates set to yes but installUpdates is set to no."
@@ -37,12 +61,14 @@ try {
             $env:purgeUpdates = $false
         }
     }
+    
+    If ($env:installHyperV -eq 'NO') {
+        $ExtraFeatures = @()
+    }
 
     Write-Host "Writing all the environment variables"
     Get-ChildItem Env:
     Write-Host "Finished writing all environment variables"
-
-    $env:sizeBytes = $env:sizeBytes.ToString()
 
     Write-Host "Starting the image generation..."
     #New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes 45GB -Memory 8GB -CpuCores 4 -DiskLayout BIOS -RunSysprep -PurgeUpdates:$true -InstallUpdates:$true $finalParams
