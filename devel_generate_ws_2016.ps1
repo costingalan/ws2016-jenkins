@@ -29,8 +29,10 @@ try {
     If ($env:remoteISOName) {
         $remoteISO = $env:remoteISODir + '/' + $env:remoteISOName
         pushd $build_area
+        $remoteISO
         scp $remoteISO .
-        $finalISO = Join-Path -Path $build_area -ChildPath $env:remoteISOName
+        $finalISO = Join-Path -Path $buildArea -ChildPath $env:remoteISOName
+        $finalISO
         popd
     }
 
