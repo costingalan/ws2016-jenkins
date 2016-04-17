@@ -74,6 +74,7 @@ try {
 } finally {
     Write-Host "Cleaning up woitDir and scriptDir"
     cd "C:\"
+    Start-Sleep -s 10
     Remove-Item -Recurse -Force $woitDir
     Remove-Item -Recurse -Force $scriptDir
     If ((!$env:localISO) -and (Test-Path $finalISO)) { Remove-Item -Force "$finalISO" }
