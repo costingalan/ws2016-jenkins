@@ -104,5 +104,6 @@ try {
     Write-Host "Image generation has failed."
     Write-Host $_
 } finally {
-    Dismount-DiskImage $finaliso
+    Write-Host "Dismounting the iso: $finalISO"
+    Dismount-DiskImage $finalISO
 }
