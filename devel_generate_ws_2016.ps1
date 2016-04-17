@@ -30,8 +30,8 @@ try {
         $remoteISO = $env:remoteISODir + '/' + $env:remoteISOName
         pushd $build_area
         $remoteISO
-        scp $remoteISO .
-        $finalISO = Join-Path -Path $buildArea -ChildPath $env:remoteISOName
+        scp $remoteISO ($env:BUILD_NUMBER + '-' + $env:remoteISOName)
+        $finalISO = Join-Path -Path $buildArea -ChildPath ($env:BUILD_NUMBER + '-' + $env:remoteISOName)
         $finalISO
         popd
     }
