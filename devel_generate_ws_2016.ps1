@@ -38,6 +38,13 @@ try {
         $finalISO = $env:localISO
     }
 
+    Write-Host "Printing the parameters"
+    Write-Host "Printing the remoteiso: $remoteISO"
+    Write-Host "Printing the remoteisoName $env:remoteISOName"
+    Write-Host "Printing the remoteisoDir $env:remoteISODir"
+    Write-Host "Printing the localIso $env:localISO "
+    Write-Host "Printing the finalIso $finalISO "
+    Write-Host "Finished showing the parameters"
 
     pushd "$buildArea"
     if (Test-Path "$woitDir") {
