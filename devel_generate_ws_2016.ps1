@@ -6,11 +6,11 @@
 $baseDir = "C:\generate_windows_images"
 $buildArea = Join-Path -Path "$baseDir" -ChildPath "build_area"
 $logDir = Join-Path -Path "$buildArea" -ChildPath "logs"
-$woitDir = Join-Path -Path "$buildArea" -ChildPath "woit-$env:BUILD_NUMBER"
-$scriptDir = Join-Path -Path "$buildArea" -ChildPath "ws2016-jenkins-$env:BUILD_NUMBER"
+$woitDir = Join-Path -Path "$buildArea" -ChildPath "devel-woit-$env:BUILD_NUMBER"
+$scriptDir = Join-Path -Path "$buildArea" -ChildPath "devel-ws2016-jenkins-$env:BUILD_NUMBER"
 $logName = (Get-Date).ToString('ddMMyyy') + '-' + "$env:BUILD_NUMBER" + '-devel' + '.txt'
 $logPath = Join-Path -Path "$logDir" -ChildPath "$logName"
-$imageName = (Get-Date).ToString('ddMMyyy') + '-' + "$env:BUILD_NUMBER" + '-dd'
+$imageName = (Get-Date).ToString('ddMMyyy') + '-' + "$env:BUILD_NUMBER" + '-devel-dd'
 $isoDir = Join-Path -Path "$baseDir" -ChildPath "generated_images"
 $targetPath = Join-Path -Path "$isoDir" -ChildPath "$imageName"
 $virtPath = Join-Path -Path "$baseDir" -ChildPath "optional_images\virtio-win-0.1.102.iso"
@@ -40,19 +40,11 @@ try {
         $finalISO = $env:localISO
     }
 
-    Write-Host "Printing the parameters"
-    Write-Host "Printing the remoteiso: $remoteISO"
-    Write-Host "Printing the remoteisoName $env:remoteISOName"
-    Write-Host "Printing the remoteisoDir $env:remoteISODir"
-    Write-Host "Printing the localIso $env:localISO "
-    Write-Host "Printing the finalIso $finalISO "
-    Write-Host "Finished showing the parameters"
-
     pushd "$buildArea"
     if (Test-Path "$woitDir") {
         Remove-Item -Recurse -Force "$woitDir"
     }
-    git clone -b devel_jenkins https://github.com/costingalan/windows-openstack-imaging-tools "woit-$env:BUILD_NUMBER" 
+    git clone -b devel_jenkins https://github.com/costingalan/windows-openstack-imaging-tools "devel-woit-$env:BUILD_NUMBER" 
     pushd "$woitDir"
     git checkout devel_jenkins
     git submodule update --init #for the curtin and update modules
@@ -62,9 +54,9 @@ try {
         Write-Host "Removing $scriptDir"
         Remove-Item -Force -Recurse "$scriptDir"
     }
-    git clone https://github.com/costingalan/ws2016-jenkins "ws2016-jenkins-$env:BUILD_NUMBER"
+    git clone https://github.com/costingalan/ws2016-jenkins "devel-ws2016-jenkins-$env:BUILD_NUMBER"
     pushd "$scriptDir"
-    .\generate_script.ps1 | Tee-Object -FilePath "$logPath"
+    .\devel_generate_script.ps1 | Tee-Object -FilePath "$logPath"
     popd
 
     popd
