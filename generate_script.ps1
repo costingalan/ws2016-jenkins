@@ -25,7 +25,7 @@ try {
     $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
 
     Write-Host "Choosing the imageEdition"
-    # Choosing the type of image
+    # Choosing the type of image. Does not apply on Windows Server 2008
     If ($env:imageEdition -eq 'CORE') {
         $image = $images[0]
     } else {
@@ -49,6 +49,7 @@ try {
     } else {
         [boolean]$purgeUpdates = $false
     }
+    Write-Host "purgeUpdates are set to $purgeUpdates"
 
     If ($env:persistDrivers -eq 'YES') {
         [boolean]$persistDrivers = $true
@@ -69,6 +70,7 @@ try {
             [boolean]$purgeUpdates = $false
         }
     }
+    Write-Host "purgeUpdates are set to $purgeUpdates"
 
     If ($env:persistDriver -eq 'YES') {
         $persistDriver = $true
