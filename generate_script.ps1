@@ -108,5 +108,5 @@ try {
     Write-Host $_
 } finally {
     Write-Host "Dismounting the iso: $finalISO"
-    Dismount-DiskImage $finalISO
+    Dismount-DiskImage -DevicePath $driveLetter
 }
