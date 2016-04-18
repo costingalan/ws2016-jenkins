@@ -46,5 +46,4 @@ try {
     cd "C:\"
     Start-Sleep -s 10
     Remove-Item -Recurse -Force $woitDir
-    Remove-Item -Recurse -Force $scriptDir
 }
