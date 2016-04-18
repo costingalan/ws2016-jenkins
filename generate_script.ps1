@@ -63,7 +63,7 @@ try {
         [boolean]$force = $false
     }
 
-    If ($env:purgeUpdates -eq 'YES') {
+    If ([boolean]$purgeUpdates -eq '$true') {
         If ([boolean]$installUpdates -eq '$false') {
             Write-Warning "You have purgeUpdates set to yes but installUpdates is set to no."
             Write-Warning "Will not purge the updates"
