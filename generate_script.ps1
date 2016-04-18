@@ -15,6 +15,7 @@ try {
     If (Get-Module WinImageBuilder) {
         Remove-Module WinImageBuilder
     }
+    ls $woitDir
     Import-Module "$woitDir\WinImageBuilder.psm1"
 
     #This is the content of your Windows ISO
