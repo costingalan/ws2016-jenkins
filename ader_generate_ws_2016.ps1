@@ -6,11 +6,11 @@
 $baseDir = "C:\generate_windows_images"
 $buildArea = Join-Path -Path "$baseDir" -ChildPath "build_area"
 $logDir = Join-Path -Path "$buildArea" -ChildPath "logs"
-$woitDir = Join-Path -Path "$buildArea" -ChildPath "woit-$env:BUILD_NUMBER"
-$scriptDir = Join-Path -Path "$buildArea" -ChildPath "ws2016-jenkins-$env:BUILD_NUMBER"
-$logName = (Get-Date).ToString('ddMMyyy') + '-' + "$env:BUILD_NUMBER" + '-devel' + '.txt'
+$woitDir = Join-Path -Path "$buildArea" -ChildPath "ader-woit-$env:BUILD_NUMBER"
+$scriptDir = Join-Path -Path "$buildArea" -ChildPath "ader-ws2016-jenkins-$env:BUILD_NUMBER"
+$logName = (Get-Date).ToString('ddMMyyy') + '-' + "$env:BUILD_NUMBER" + '-ader' + '.txt'
 $logPath = Join-Path -Path "$logDir" -ChildPath "$logName"
-$imageName = (Get-Date).ToString('ddMMyyy') + '-' + "$env:BUILD_NUMBER" + '-dd'
+$imageName = (Get-Date).ToString('ddMMyyy') + '-' + "$env:BUILD_NUMBER" + '-ader-dd'
 $isoDir = Join-Path -Path "$baseDir" -ChildPath "generated_images"
 $targetPath = Join-Path -Path "$isoDir" -ChildPath "$imageName"
 $virtPath = Join-Path -Path "$baseDir" -ChildPath "optional_images\virtio-win-0.1.102.iso"
@@ -52,7 +52,7 @@ try {
     if (Test-Path "$woitDir") {
         Remove-Item -Recurse -Force "$woitDir"
     }
-    git clone -b sync-master-experimental https://github.com/ader1990/windows-openstack-imaging-tools "woit-$env:BUILD_NUMBER" 
+    git clone -b sync-master-experimental https://github.com/ader1990/windows-openstack-imaging-tools "ader-woit-$env:BUILD_NUMBER" 
     pushd "$woitDir"
     git checkout sync-master-experimental
     git submodule update --init #for the curtin and update modules
@@ -62,9 +62,9 @@ try {
         Write-Host "Removing $scriptDir"
         Remove-Item -Force -Recurse "$scriptDir"
     }
-    git clone https://github.com/costingalan/ws2016-jenkins "ws2016-jenkins-$env:BUILD_NUMBER"
+    git clone https://github.com/costingalan/ws2016-jenkins "ader-ws2016-jenkins-$env:BUILD_NUMBER"
     pushd "$scriptDir"
-    .\generate_script.ps1 | Tee-Object -FilePath "$logPath"
+    .\ader_script.ps1 | Tee-Object -FilePath "$logPath"
     popd
 
     popd
