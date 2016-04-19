@@ -33,31 +33,35 @@ try {
         $image = $images[1]
     }
 
+    Write-Host "Setting the runSysprep variable..."
     If ($env:runSysprep -eq 'YES') {
         [boolean]$runSysprep = $true
     } else {
         [boolean]$runSysprep = $false 
     }
-
+    
+    Write-Host "Setting the installUpdates variable..."
     If ($env:installUpdates -eq 'YES') {
         [boolean]$installUpdates = $true
     } else {
         [boolean]$installUpdates = $false
     }
 
+    Write-Host "Setting purgeUpdates variable..."
     If ($env:purgeUpdates -eq 'YES') {
         [boolean]$purgeUpdates = $true
     } else {
         [boolean]$purgeUpdates = $false
     }
-    Write-Host "purgeUpdates are set to $purgeUpdates"
 
+    Write-Host "Setting the persistDrivers variable..."
     If ($env:persistDrivers -eq 'YES') {
         [boolean]$persistDrivers = $true
     } else {
         [boolean]$persistDrivers = $false
     }
 
+    Write-Host "Setting the force variable"
     If ($env:force -eq 'YES') {
         [boolean]$force = $true
     } else {
@@ -71,14 +75,16 @@ try {
     #        [boolean]$purgeUpdates = $false
     #    }
     #}
-    Write-Host "purgeUpdates are set to $purgeUpdates"
+    #Write-Host "purgeUpdates are set to $purgeUpdates"
 
+    Write-Host "Setting the persistDriver"
     If ($env:persistDriver -eq 'YES') {
         $persistDriver = $true
     } else {
         $persistDriver = $false
     }
 
+    Write-Host "Setting the installHyperv variable..."
     If ($env:installHyperV -eq 'NO') {
         $ExtraFeatures = @()
     }
@@ -91,16 +97,25 @@ try {
     Get-Variable | Out-String
     Write-Host "Finished writing all variables"
 
-   [uint64]$sizeBytes = $env:sizeBytes
-   $sizeBytes = $sizeBytes * 1GB 
-   [uint64]$memory = $env:memory
-   $memory = $memory * 1GB
-   [uint64]$cpuCores = $env:CpuCores
+    Write-Host "Setting sizeBytes..."
+    [uint64]$sizeBytes = $env:sizeBytes
+    $sizeBytes = $sizeBytes * 1GB 
+    
+    Write-Host "Setting memory..."
+    [uint64]$memory = $env:memory
+    $memory = $memory * 1GB
+    
+    Write-Host "Setting CpuCores"
+    [uint64]$cpuCores = $env:CpuCores
 
-   $env:imageType = $env:imageType.ToUpper()
+    Write-Host "Setting the imageType"
+    $env:imageType = $env:imageType.ToUpper()
 
     Write-Host "Starting the image generation..."
-    New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout -RunSysprep:$runSysprep -PurgeUpdates:$purgeUpdates -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver -SwitchName $env:switchName -VirtIOISOPath $env:virtPath -ProductKey $env:productKey
+    New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath `
+    -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout -RunSysprep:$runSysprep -PurgeUpdates:$purgeUpdates `
+    -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver -SwitchName $env:switchName `
+    -VirtIOISOPath $env:virtPath -ProductKey $env:productKey
 
     Write-Host "Finished the image generation."
 } catch {
@@ -108,6 +123,5 @@ try {
     Write-Host $_
 } finally {
     Write-Host "Dismounting the iso: $finalISO"
-    $driveL = $driveLetter.split(":")[0]
-    Dismount-DiskImage $driveL
+    Dismount-DiskImage $finalISO
 }
