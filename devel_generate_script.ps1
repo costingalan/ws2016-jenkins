@@ -109,5 +109,5 @@ try {
 } finally {
     Write-Host "Dismounting the iso: $finalISO"
     $driveL = $driveLetter.split(":")[0]
-    Dismount-DiskImage -DevicePath $driveL
+    Dismount-DiskImage $driveL
 }
