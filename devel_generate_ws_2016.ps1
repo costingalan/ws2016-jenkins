@@ -30,7 +30,7 @@ try {
         $remoteISO = $env:remoteISODir + '/' + $env:remoteISOName
         pushd $build_area
         $remoteISO
-        pscp -scp -unsafe $remoteISO ($env:BUILD_NUMBER + '-' + $env:remoteISOName)
+        echo y | pscp -scp -unsafe $remoteISO ($env:BUILD_NUMBER + '-' + $env:remoteISOName)
         $finalISO = Join-Path -Path $buildArea -ChildPath ($env:BUILD_NUMBER + '-' + $env:remoteISOName)
         $finalISO
         popd
