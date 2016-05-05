@@ -30,7 +30,7 @@ try {
         $remoteISO = $env:remoteISODir + '/' + $env:remoteISOName
         pushd $build_area
         $remoteISO
-        pscp -hostkey bc:46:c7:6a:25:aa:43:b6:f7:c7:d2:31:77:2e:0a:58 $remoteISO ($env:BUILD_NUMBER + '-' + $env:remoteISOName)
+        scp -o StrictHostKeyChecking=no -i "C:\Users\Administrator\.ssh\id_rsa.pub" $remoteISO ($env:BUILD_NUMBER + '-' + $env:remoteISOName)
         $finalISO = Join-Path -Path $buildArea -ChildPath ($env:BUILD_NUMBER + '-' + $env:remoteISOName)
         $finalISO
         popd
