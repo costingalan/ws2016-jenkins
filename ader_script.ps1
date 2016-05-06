@@ -99,7 +99,7 @@ try {
    $env:imageType = $env:imageType.ToUpper()
 
     Write-Host "Starting the image generation..."
-    New-MAASImage -WimFilePath $wimFilePath -ImageName $image.ImageName -MAASImagePath $targetPath -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout -RunSysprep:$runSysprep -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver -SwitchName $env:switchName -VirtIOISOPath $env:virtPath -ProductKey $env:productKey
+    New-MAASImage -WimFilePath $wimFilePath -ImageName $image.ImageName -MAASImagePath $targetPath -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout -RunSysprep:$runSysprep -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver -SwitchName $env:switchName -VirtIOISOPath $env:virtPath -ProductKey $env:productKey -DisableSwap:$true
 
     Write-Host "Finished the image generation."
 } catch {
