@@ -26,7 +26,7 @@ try {
     $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
 
     Write-Host "Choosing the imageEdition"
-    # Choosing the type of image. Does not apply on Windows Server 2008
+    # Choosing the type of image. Does not apply on Windows Server 2008R2
     If ($env:imageEdition -eq 'CORE') {
         $image = $images[0]
     } else {
@@ -39,7 +39,7 @@ try {
     } else {
         [boolean]$runSysprep = $false 
     }
-    
+
     Write-Host "Setting the installUpdates variable..."
     If ($env:installUpdates -eq 'YES') {
         [boolean]$installUpdates = $true
@@ -92,7 +92,7 @@ try {
     Write-Host "Writing all the environment variables"
     Get-ChildItem Env:
     Write-Host "Finished writing all environment variables"
-    
+
     Write-Host "Writing all the variables"
     Get-Variable | Out-String
     Write-Host "Finished writing all variables"
@@ -100,11 +100,11 @@ try {
     Write-Host "Setting sizeBytes..."
     [uint64]$sizeBytes = $env:sizeBytes
     $sizeBytes = $sizeBytes * 1GB 
-    
+
     Write-Host "Setting memory..."
     [uint64]$memory = $env:memory
     $memory = $memory * 1GB
-    
+
     Write-Host "Setting CpuCores"
     [uint64]$cpuCores = $env:CpuCores
 
@@ -112,10 +112,16 @@ try {
     $env:imageType = $env:imageType.ToUpper()
 
     Write-Host "Starting the image generation..."
-    New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath `
+    $COMMAND = "New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath `
     -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout -RunSysprep:$runSysprep -PurgeUpdates:$purgeUpdates `
     -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver -SwitchName $env:switchName `
-    -VirtIOISOPath $env:virtPath -ProductKey $env:productKey -ExtraDriversPath $env:ExtraDriversPath
+    -ProductKey $env:productKey -ExtraDriversPath $env:ExtraDriversPath"
+
+    If ($env:virtPath) {
+    $COMMAND += "-VirtIOISOPath $env:virtPath"
+    }
+
+    Invoke-Expression $COMMAND
 
     Write-Host "Finished the image generation."
 } catch {
