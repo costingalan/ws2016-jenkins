@@ -30,7 +30,7 @@ try {
         $remoteISO = $env:remoteISODir + '/' + $env:remoteISOName
         pushd $build_area
         $remoteISO
-        scp -o StrictHostKeyChecking=no -i "C:\Users\Administrator\.ssh\id_rsa.pub" $remoteISO ($env:BUILD_NUMBER + '-' + $env:remoteISOName)
+        scp -o StrictHostKeyChecking=no -i "C:\Users\Administrator\.ssh\id_rsa" $remoteISO ($env:BUILD_NUMBER + '-' + $env:remoteISOName)
         $finalISO = Join-Path -Path $buildArea -ChildPath ($env:BUILD_NUMBER + '-' + $env:remoteISOName)
         $finalISO
         popd
