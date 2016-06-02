@@ -50,9 +50,9 @@ try {
     if (Test-Path "$woitDir") {
         Remove-Item -Recurse -Force "$woitDir"
     }
-    git clone -b disable_swap https://github.com/costingalan/windows-openstack-imaging-tools "ader-woit-$env:BUILD_NUMBER" 
+    git clone -b sync-master-experimental https://github.com/costingalan/windows-openstack-imaging-tools "ader-woit-$env:BUILD_NUMBER" 
     pushd "$woitDir"
-    git checkout disable_swap
+    git checkout sync-master-experimental
     git submodule update --init #for the curtin and update modules
     popd
     ls

@@ -85,7 +85,7 @@ try {
     Write-Host "Writing all the environment variables"
     Get-ChildItem Env:
     Write-Host "Finished writing all environment variables"
-    
+
     Write-Host "Writing all the variables"
     Get-Variable | Out-String
     Write-Host "Finished writing all variables"
@@ -99,7 +99,7 @@ try {
    $env:imageType = $env:imageType.ToUpper()
 
     Write-Host "Starting the image generation..."
-    New-MAASImage -WimFilePath $wimFilePath -ImageName $image.ImageName -MAASImagePath $targetPath -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout -RunSysprep:$runSysprep -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver -SwitchName $env:switchName -VirtIOISOPath $env:virtPath -ProductKey $env:productKey -DisableSwap:$true
+    New-MAASImage -WimFilePath $wimFilePath -ImageName $image.ImageName -MAASImagePath $targetPath -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout -RunSysprep:$runSysprep -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver -SwitchName $env:switchName -VirtIOISOPath $env:virtPath -ProductKey $env:productKey
 
     Write-Host "Finished the image generation."
 } catch {
