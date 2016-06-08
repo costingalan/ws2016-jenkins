@@ -3,7 +3,7 @@
 # Description: Script for gathering and executing the jenkins job
 # for generating latest windows images.
 
-$baseDir = "C:\generate_windows_images"
+$baseDir = "G:\generate_windows_images"
 $buildArea = Join-Path -Path "$baseDir" -ChildPath "build_area"
 $logDir = Join-Path -Path "$buildArea" -ChildPath "logs"
 $woitDir = Join-Path -Path "$buildArea" -ChildPath "devel-woit-$env:BUILD_NUMBER"

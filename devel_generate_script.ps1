@@ -1,5 +1,4 @@
-#Set-PSDebug -Trace 2
-$baseDir = "C:\generate_windows_images"
+$baseDir = "G:\generate_windows_images"
 $buildArea = Join-Path -Path "$baseDir" -ChildPath "build_area"
 $logDir = Join-Path -Path "$buildArea" -ChildPath "logs"
 $woitDir = Join-Path -Path "$buildArea" -ChildPath "devel-woit-$env:BUILD_NUMBER"
@@ -12,7 +11,7 @@ $targetPath = Join-Path -Path "$isoDir" -ChildPath "$imageName"
 $virtPath = Join-Path -Path "$baseDir" -ChildPath "optional_images\virtio-win-0.1.102.iso"
 
 try {
-    If (Get-Module WinImageBuilder) {
+    if (Get-Module WinImageBuilder) {
         Remove-Module WinImageBuilder
     }
     ls $woitDir
@@ -25,44 +24,36 @@ try {
     # Check what images are supported in this Windows ISO
     $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
 
-    Write-Host "Choosing the imageEdition"
-    # Choosing the type of image. Does not apply on Windows Server 2008R2
-    If ($env:imageEdition -eq 'CORE') {
-        $image = $images[0]
-    } else {
-        $image = $images[1]
-    }
-
     Write-Host "Setting the runSysprep variable..."
-    If ($env:runSysprep -eq 'YES') {
+    if ($env:runSysprep -eq 'YES') {
         [boolean]$runSysprep = $true
     } else {
         [boolean]$runSysprep = $false 
     }
 
     Write-Host "Setting the installUpdates variable..."
-    If ($env:installUpdates -eq 'YES') {
+    if ($env:installUpdates -eq 'YES') {
         [boolean]$installUpdates = $true
     } else {
         [boolean]$installUpdates = $false
     }
 
     Write-Host "Setting purgeUpdates variable..."
-    If ($env:purgeUpdates -eq 'YES') {
+    if ($env:purgeUpdates -eq 'YES') {
         [boolean]$purgeUpdates = $true
     } else {
         [boolean]$purgeUpdates = $false
     }
 
     Write-Host "Setting the persistDrivers variable..."
-    If ($env:persistDrivers -eq 'YES') {
+    if ($env:persistDrivers -eq 'YES') {
         [boolean]$persistDrivers = $true
     } else {
         [boolean]$persistDrivers = $false
     }
 
     Write-Host "Setting the force variable"
-    If ($env:force -eq 'YES') {
+    if ($env:force -eq 'YES') {
         [boolean]$force = $true
     } else {
         [boolean]$force = $false
@@ -78,15 +69,18 @@ try {
     #Write-Host "purgeUpdates are set to $purgeUpdates"
 
     Write-Host "Setting the persistDriver"
-    If ($env:persistDriver -eq 'YES') {
+    if ($env:persistDriver -eq 'YES') {
         $persistDriver = $true
     } else {
         $persistDriver = $false
     }
 
     Write-Host "Setting the installHyperv variable..."
-    If ($env:installHyperV -eq 'NO') {
+    if ($env:installHyperV -eq 'NO') {
         $ExtraFeatures = @()
+    }
+    else {
+        $ExtraFeatures = 'YES'
     }
 
     Write-Host "Writing all the environment variables"
@@ -114,11 +108,16 @@ try {
     Write-Host "Starting the image generation..."
     $COMMAND = "New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath `
     -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout -RunSysprep:$runSysprep -PurgeUpdates:$purgeUpdates `
-    -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver -SwitchName $env:switchName `
-    -ProductKey $env:productKey -ExtraDriversPath $env:ExtraDriversPath"
+    -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver -SwitchName $env:switchName"
 
-    If ($env:virtPath) {
-    $COMMAND += "-VirtIOISOPath $env:virtPath"
+    if ($env:virtPath) {
+        $COMMAND += " -VirtIOISOPath ${env:virtPath}"
+    }
+    if ($env:productKey) {
+        $COMMAND += " -ProductKey ${env:productKey}"
+    }
+    if ($env:ExtraDriversPath) {
+        $COMMAND += " -ExtraDriversPath ${env:ExtraDriversPath}"
     }
 
     Invoke-Expression $COMMAND
