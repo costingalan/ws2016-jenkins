@@ -26,37 +26,37 @@ try {
 
     Write-Host "Setting the runSysprep variable..."
     if ($env:runSysprep -eq 'YES') {
-        [boolean]$runSysprep = $true
+        [boolean]$runSysprep = "`$true"
     } else {
-        [boolean]$runSysprep = $false 
+        [boolean]$runSysprep = '`$false'
     }
 
     Write-Host "Setting the installUpdates variable..."
     if ($env:installUpdates -eq 'YES') {
-        [boolean]$installUpdates = $true
+        [boolean]$installUpdates = '`$true'
     } else {
-        [boolean]$installUpdates = $false
+        [boolean]$installUpdates = '`$false'
     }
 
     Write-Host "Setting purgeUpdates variable..."
     if ($env:purgeUpdates -eq 'YES') {
-        [boolean]$purgeUpdates = $true
+        [boolean]$purgeUpdates = '`$true'
     } else {
-        [boolean]$purgeUpdates = $false
+        [boolean]$purgeUpdates = '`$false'
     }
 
     Write-Host "Setting the persistDrivers variable..."
     if ($env:persistDrivers -eq 'YES') {
-        [boolean]$persistDrivers = $true
+        [boolean]$persistDrivers = '`$true'
     } else {
-        [boolean]$persistDrivers = $false
+        [boolean]$persistDrivers = '`$false'
     }
 
     Write-Host "Setting the force variable"
     if ($env:force -eq 'YES') {
-        [boolean]$force = $true
+        [boolean]$force = '`$true'
     } else {
-        [boolean]$force = $false
+        [boolean]$force = '`$false'
     }
 
     #If ([boolean]$purgeUpdates -eq '$true') {
@@ -70,9 +70,9 @@ try {
 
     Write-Host "Setting the persistDriver"
     if ($env:persistDriver -eq 'YES') {
-        $persistDriver = $true
+        $persistDriver = '`$true'
     } else {
-        $persistDriver = $false
+        $persistDriver = '`$false'
     }
 
     Write-Host "Setting the installHyperv variable..."
@@ -106,9 +106,7 @@ try {
     $env:imageType = $env:imageType.ToUpper()
 
     Write-Host "Starting the image generation..."
-    $COMMAND = "New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath `
-    -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout -RunSysprep:$runSysprep -PurgeUpdates:$purgeUpdates `
-    -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver -SwitchName $env:switchName"
+    $COMMAND = "New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout -RunSysprep:$runSysprep -PurgeUpdates:$purgeUpdates -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver"
 
     if ($env:virtPath) {
         $COMMAND += " -VirtIOISOPath ${env:virtPath}"
@@ -119,8 +117,11 @@ try {
     if ($env:ExtraDriversPath) {
         $COMMAND += " -ExtraDriversPath ${env:ExtraDriversPath}"
     }
-
-    Invoke-Expression $COMMAND
+    if ($env:switchName) {
+        $COMMAND += " -SwitchName ${env:switchName}"
+    }
+    $COMMAND
+    Invoke-Expression -Command $COMMAND
 
     Write-Host "Finished the image generation."
 } catch {
