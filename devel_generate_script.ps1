@@ -25,39 +25,45 @@ try {
     $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
 
     Write-Host "Setting the runSysprep variable..."
-    if ($env:runSysprep -eq 'YES') {
-        [boolean]$runSysprep = '$true'
-    } else {
-        [boolean]$runSysprep = '$false'
-    }
+    switch -regex ($env:runSysprep)
+         {
+             "YES|yes" {"[boolean] ${runSysprep} = '$true'"}
+             "NO|no"   {"[boolean] ${runSysprep} = '$false'"}
+             default   {"[boolean] ${runSysprep} = '$true'"}
+         }
 
     Write-Host "Setting the installUpdates variable..."
-    if ($env:installUpdates -eq 'YES') {
-        [boolean]$installUpdates = '$true'
-    } else {
-        [boolean]$installUpdates = '$false'
-    }
+    switch -regex ($env:installUpdates)
+         {
+             "YES|yes" {"[boolean] ${installUpdates} = '$true'"}
+             "NO|no"   {"[boolean] ${installUpdates} = '$false'"}
+             default   {"[boolean] ${installUpdates} = '$true'"}
+         }
+
 
     Write-Host "Setting purgeUpdates variable..."
-    if ($env:purgeUpdates -eq 'YES') {
-        [boolean]$purgeUpdates = '$true'
-    } else {
-        [boolean]$purgeUpdates = '$false'
-    }
+    switch -regex ($env:purgeUpdates)
+         {
+             "YES|yes" {"[boolean] ${purgeUpdates} = '$true'"}
+             "NO|no"   {"[boolean] ${purgeUpdates} = '$false'"}
+             default   {"[boolean] ${purgeUpdates} = '$true'"}
+         }
 
     Write-Host "Setting the persistDrivers variable..."
-    if ($env:persistDrivers -eq 'YES') {
-        [boolean]$persistDrivers = '$true'
-    } else {
-        [boolean]$persistDrivers = '$false'
-    }
+    switch -regex ($env:persistDrivers)
+         {
+             "YES|yes" {"[boolean] ${persistDrivers} = '$true'"}
+             "NO|no"   {"[boolean] ${persistDrivers} = '$false'"}
+             default   {"[boolean] ${persistDrivers} = '$false'"}
+         }
 
     Write-Host "Setting the force variable"
-    if ($env:force -eq 'YES') {
-        [boolean]$force = '$true'
-    } else {
-        [boolean]$force = '$false'
-    }
+    switch -regex ($env:force)
+         {
+             "YES|yes" {"[boolean] ${force} = '$true'"}
+             "NO|no"   {"[boolean] ${force} = '$false'"}
+             default   {"[boolean] ${force} = '$false'"}
+         }
 
     #If ([boolean]$purgeUpdates -eq '$true') {
     #    If ([boolean]$installUpdates -eq '$false') {
@@ -67,13 +73,6 @@ try {
     #    }
     #}
     #Write-Host "purgeUpdates are set to $purgeUpdates"
-
-    Write-Host "Setting the persistDriver"
-    if ($env:persistDriver -eq 'YES') {
-        $persistDriver = '$true'
-    } else {
-        $persistDriver = '$false'
-    }
 
     Write-Host "Setting the installHyperv variable..."
     if ($env:installHyperV -eq 'NO') {
