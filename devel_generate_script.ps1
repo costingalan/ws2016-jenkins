@@ -26,37 +26,37 @@ try {
 
     Write-Host "Setting the runSysprep variable..."
     if ($env:runSysprep -eq 'YES') {
-        [boolean]$runSysprep = "`$true"
+        [boolean]$runSysprep = '$true'
     } else {
-        [boolean]$runSysprep = '`$false'
+        [boolean]$runSysprep = '$false'
     }
 
     Write-Host "Setting the installUpdates variable..."
     if ($env:installUpdates -eq 'YES') {
-        [boolean]$installUpdates = '`$true'
+        [boolean]$installUpdates = '$true'
     } else {
-        [boolean]$installUpdates = '`$false'
+        [boolean]$installUpdates = '$false'
     }
 
     Write-Host "Setting purgeUpdates variable..."
     if ($env:purgeUpdates -eq 'YES') {
-        [boolean]$purgeUpdates = '`$true'
+        [boolean]$purgeUpdates = '$true'
     } else {
-        [boolean]$purgeUpdates = '`$false'
+        [boolean]$purgeUpdates = '$false'
     }
 
     Write-Host "Setting the persistDrivers variable..."
     if ($env:persistDrivers -eq 'YES') {
-        [boolean]$persistDrivers = '`$true'
+        [boolean]$persistDrivers = '$true'
     } else {
-        [boolean]$persistDrivers = '`$false'
+        [boolean]$persistDrivers = '$false'
     }
 
     Write-Host "Setting the force variable"
     if ($env:force -eq 'YES') {
-        [boolean]$force = '`$true'
+        [boolean]$force = '$true'
     } else {
-        [boolean]$force = '`$false'
+        [boolean]$force = '$false'
     }
 
     #If ([boolean]$purgeUpdates -eq '$true') {
@@ -70,17 +70,14 @@ try {
 
     Write-Host "Setting the persistDriver"
     if ($env:persistDriver -eq 'YES') {
-        $persistDriver = '`$true'
+        $persistDriver = '$true'
     } else {
-        $persistDriver = '`$false'
+        $persistDriver = '$false'
     }
 
     Write-Host "Setting the installHyperv variable..."
     if ($env:installHyperV -eq 'NO') {
         $ExtraFeatures = @()
-    }
-    else {
-        $ExtraFeatures = 'YES'
     }
 
     Write-Host "Writing all the environment variables"
@@ -120,8 +117,11 @@ try {
     if ($env:switchName) {
         $COMMAND += " -SwitchName ${env:switchName}"
     }
+    $IMPORT_COMMAND = 'Import-Module "G:\generate_windows_images\build_area\devel-woit-$env:BUILD_NUMBER\WinImageBuilder"'
     $COMMAND
-    Invoke-Expression -Command $COMMAND
+    $COMMAND_ENCODED = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($COMMAND))
+    $COMMAND_ENCODED
+    powershell.exe $IMPORT_COMMAND -EncodedCommand $COMMAND_ENCODED
 
     Write-Host "Finished the image generation."
 } catch {
