@@ -24,45 +24,47 @@ try {
     # Check what images are supported in this Windows ISO
     $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
 
+    $COMMAND = "New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout"
+
     Write-Host "Setting the runSysprep variable..."
     switch -regex ($env:runSysprep)
          {
-             "YES|yes" {"[boolean] ${runSysprep} = '$true'"}
-             "NO|no"   {"[boolean] ${runSysprep} = '$false'"}
-             default   {"[boolean] ${runSysprep} = '$true'"}
+             "YES|yes" {"$COMMAND += '-RunSysprep:$true'"; break}
+             "NO|no"   {"$COMMAND += '-RunSysprep:$false'"; break}
+             default   {"$COMMAND += '-RunSysprep:$true'"; break}
          }
 
     Write-Host "Setting the installUpdates variable..."
     switch -regex ($env:installUpdates)
          {
-             "YES|yes" {"[boolean] ${installUpdates} = '$true'"}
-             "NO|no"   {"[boolean] ${installUpdates} = '$false'"}
-             default   {"[boolean] ${installUpdates} = '$true'"}
+             "YES|yes" {"$COMMAND += '-InstallUpdates:$true'"; break}
+             "NO|no"   {"$COMMAND += '-InstallUpdates:$false'"; break}
+             default   {"$COMMAND += '-InstallUpdaites:$true'"; break}
          }
 
 
     Write-Host "Setting purgeUpdates variable..."
     switch -regex ($env:purgeUpdates)
          {
-             "YES|yes" {"[boolean] ${purgeUpdates} = '$true'"}
-             "NO|no"   {"[boolean] ${purgeUpdates} = '$false'"}
-             default   {"[boolean] ${purgeUpdates} = '$true'"}
+             "YES|yes" {"$COMMAND += '-PurgeUpdates:$true'"; break}
+             "NO|no"   {"$COMMAND += '-PurgeUpdates:$false'"; break}
+             default   {"$COMMAND += '-PurgeUpdates:$true'"; break}
          }
 
     Write-Host "Setting the persistDrivers variable..."
     switch -regex ($env:persistDrivers)
          {
-             "YES|yes" {"[boolean] ${persistDrivers} = '$true'"}
-             "NO|no"   {"[boolean] ${persistDrivers} = '$false'"}
-             default   {"[boolean] ${persistDrivers} = '$false'"}
+             "YES|yes" {"$COMMAND += '-PersistDriverInstall:$true'"; break}
+             "NO|no"   {"$COMMAND += '-PersistDriversnstall:$false'"; break}
+             default   {"$COMMAND += '-PersistDriversnstall:false'"; break}
          }
 
     Write-Host "Setting the force variable"
     switch -regex ($env:force)
          {
-             "YES|yes" {"[boolean] ${force} = '$true'"}
-             "NO|no"   {"[boolean] ${force} = '$false'"}
-             default   {"[boolean] ${force} = '$false'"}
+             "YES|yes" {"$COMMAND += '-Force:$true'"; break}
+             "NO|no"   {"$COMMAND += '-Force:$false'"; break}
+             default   {"$COMMAND += '-Force:$false'"; break}
          }
 
     #If ([boolean]$purgeUpdates -eq '$true') {
@@ -102,7 +104,6 @@ try {
     $env:imageType = $env:imageType.ToUpper()
 
     Write-Host "Starting the image generation..."
-    $COMMAND = "New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout -RunSysprep:$runSysprep -PurgeUpdates:$purgeUpdates -InstallUpdates:$installUpdates -Force:$force -PersistDriverInstall:$persistDriver"
 
     if ($env:virtPath) {
         $COMMAND += " -VirtIOISOPath ${env:virtPath}"
@@ -116,11 +117,8 @@ try {
     if ($env:switchName) {
         $COMMAND += " -SwitchName ${env:switchName}"
     }
-    $IMPORT_COMMAND = 'Import-Module "G:\generate_windows_images\build_area\devel-woit-$env:BUILD_NUMBER\WinImageBuilder"'
     $COMMAND
-    $COMMAND_ENCODED = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($COMMAND))
-    $COMMAND_ENCODED
-    powershell.exe $IMPORT_COMMAND -EncodedCommand $COMMAND_ENCODED
+    Invoke-Expression $COMMAND
 
     Write-Host "Finished the image generation."
 } catch {
