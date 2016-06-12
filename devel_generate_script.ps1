@@ -24,7 +24,47 @@ try {
     # Check what images are supported in this Windows ISO
     $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
 
+    Write-Host "Setting the installHyperv variable..."
+    if ($env:installHyperV -eq 'NO') {
+        $ExtraFeatures = @()
+    }
+
+    Write-Host "Writing all the environment variables"
+    Get-ChildItem Env:
+    Write-Host "Finished writing all environment variables"
+
+    Write-Host "Writing all the variables"
+    Get-Variable | Out-String
+    Write-Host "Finished writing all variables"
+
+    Write-Host "Setting sizeBytes..."
+    [uint64]$sizeBytes = $env:sizeBytes
+    $sizeBytes = $sizeBytes * 1GB 
+
+    Write-Host "Setting memory..."
+    [uint64]$memory = $env:memory
+    $memory = $memory * 1GB
+
+    Write-Host "Setting CpuCores"
+    [uint64]$cpuCores = $env:CpuCores
+
+    Write-Host "Setting the imageType"
+    $env:imageType = $env:imageType.ToUpper()
+
     $COMMAND = "New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout"
+
+    if ($env:virtPath) {
+        $COMMAND += " -VirtIOISOPath ${env:virtPath}"
+    }
+    if ($env:productKey) {
+        $COMMAND += " -ProductKey ${env:productKey}"
+    }
+    if ($env:ExtraDriversPath) {
+        $COMMAND += " -ExtraDriversPath ${env:ExtraDriversPath}"
+    }
+    if ($env:switchName) {
+        $COMMAND += " -SwitchName ${env:switchName}"
+    }
 
     Write-Host "Setting the runSysprep variable..."
     switch -regex ($env:runSysprep)
@@ -75,49 +115,8 @@ try {
     #    }
     #}
     #Write-Host "purgeUpdates are set to $purgeUpdates"
-
-    Write-Host "Setting the installHyperv variable..."
-    if ($env:installHyperV -eq 'NO') {
-        $ExtraFeatures = @()
-    }
-
-    Write-Host "Writing all the environment variables"
-    Get-ChildItem Env:
-    Write-Host "Finished writing all environment variables"
-
-    Write-Host "Writing all the variables"
-    Get-Variable | Out-String
-    Write-Host "Finished writing all variables"
-
-    Write-Host "Setting sizeBytes..."
-    [uint64]$sizeBytes = $env:sizeBytes
-    $sizeBytes = $sizeBytes * 1GB 
-
-    Write-Host "Setting memory..."
-    [uint64]$memory = $env:memory
-    $memory = $memory * 1GB
-
-    Write-Host "Setting CpuCores"
-    [uint64]$cpuCores = $env:CpuCores
-
-    Write-Host "Setting the imageType"
-    $env:imageType = $env:imageType.ToUpper()
-
-    Write-Host "Starting the image generation..."
-
-    if ($env:virtPath) {
-        $COMMAND += " -VirtIOISOPath ${env:virtPath}"
-    }
-    if ($env:productKey) {
-        $COMMAND += " -ProductKey ${env:productKey}"
-    }
-    if ($env:ExtraDriversPath) {
-        $COMMAND += " -ExtraDriversPath ${env:ExtraDriversPath}"
-    }
-    if ($env:switchName) {
-        $COMMAND += " -SwitchName ${env:switchName}"
-    }
     $COMMAND
+    Write-Host "Starting the image generation..."
     Invoke-Expression $COMMAND
 
     Write-Host "Finished the image generation."
