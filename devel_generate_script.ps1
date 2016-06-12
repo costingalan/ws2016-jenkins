@@ -18,11 +18,14 @@ try {
     Import-Module "$woitDir\WinImageBuilder.psm1"
 
     #This is the content of your Windows ISO
-    $driveLetter = (Mount-DiskImage $finalISO -PassThru | Get-Volume).DriveLetter 
+    $driveLetter = (Mount-DiskImage $finalISO -PassThru | Get-Volume).DriveLetter
     $wimFilePath = "${driveLetter}:\sources\install.wim"
 
     # Check what images are supported in this Windows ISO
-    $images = Get-WimFileImagesInfo -WimFilePath $wimFilePath
+    $images = (Get-WimFileImagesInfo -WimFilePath $wimFilePath).ImageName
+    $image = ($images -split '\n')[$env:imageEdition]
+    $image = '"' + $image + '"'
+    $image
 
     Write-Host "Setting the installHyperv variable..."
     if ($env:installHyperV -eq 'NO') {
@@ -39,7 +42,7 @@ try {
 
     Write-Host "Setting sizeBytes..."
     [uint64]$sizeBytes = $env:sizeBytes
-    $sizeBytes = $sizeBytes * 1GB 
+    $sizeBytes = $sizeBytes * 1GB
 
     Write-Host "Setting memory..."
     [uint64]$memory = $env:memory
@@ -51,7 +54,7 @@ try {
     Write-Host "Setting the imageType"
     $env:imageType = $env:imageType.ToUpper()
 
-    $COMMAND = "New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -ImageName $image.ImageName -WindowsImagePath $targetPath -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout"
+    $COMMAND = "New-WindowsOnlineImage -Type $env:imageType -WimFilePath $wimFilePath -WindowsImagePath $targetPath -SizeBytes $sizeBytes -Memory $memory -CpuCores $cpuCores -DiskLayout $env:diskLayout"
 
     if ($env:virtPath) {
         $COMMAND += " -VirtIOISOPath ${env:virtPath}"
@@ -66,45 +69,46 @@ try {
         $COMMAND += " -SwitchName ${env:switchName}"
     }
 
+    $COMMAND += " -ImageName $image"
+
     Write-Host "Setting the runSysprep variable..."
     switch -regex ($env:runSysprep)
          {
-             "YES|yes" {"$COMMAND += '-RunSysprep:$true'"; break}
-             "NO|no"   {"$COMMAND += '-RunSysprep:$false'"; break}
-             default   {"$COMMAND += '-RunSysprep:$true'"; break}
+             "YES|yes" {$COMMAND += ' -RunSysprep:$true'; break}
+             "NO|no"   {$COMMAND += ' -RunSysprep:$false'; break}
+             default   {$COMMAND += ' -RunSysprep:$true'; break}
          }
 
     Write-Host "Setting the installUpdates variable..."
     switch -regex ($env:installUpdates)
          {
-             "YES|yes" {"$COMMAND += '-InstallUpdates:$true'"; break}
-             "NO|no"   {"$COMMAND += '-InstallUpdates:$false'"; break}
-             default   {"$COMMAND += '-InstallUpdaites:$true'"; break}
+             "YES|yes" {$COMMAND += ' -InstallUpdates:$true'; break}
+             "NO|no"   {$COMMAND += ' -InstallUpdates:$false'; break}
+             default   {$COMMAND += ' -InstallUpdates:$true'; break}
          }
-
 
     Write-Host "Setting purgeUpdates variable..."
     switch -regex ($env:purgeUpdates)
          {
-             "YES|yes" {"$COMMAND += '-PurgeUpdates:$true'"; break}
-             "NO|no"   {"$COMMAND += '-PurgeUpdates:$false'"; break}
-             default   {"$COMMAND += '-PurgeUpdates:$true'"; break}
+             "YES|yes" {$COMMAND += ' -PurgeUpdates:$true'; break}
+             "NO|no"   {$COMMAND += ' -PurgeUpdates:$false'; break}
+             default   {$COMMAND += ' -PurgeUpdates:$true'; break}
          }
 
     Write-Host "Setting the persistDrivers variable..."
     switch -regex ($env:persistDrivers)
          {
-             "YES|yes" {"$COMMAND += '-PersistDriverInstall:$true'"; break}
-             "NO|no"   {"$COMMAND += '-PersistDriversnstall:$false'"; break}
-             default   {"$COMMAND += '-PersistDriversnstall:false'"; break}
+             "YES|yes" {$COMMAND += ' -PersistDriverInstall:$true'; break}
+             "NO|no"   {$COMMAND += ' -PersistDriverInstall:$false'; break}
+             default   {$COMMAND += ' -PersistDriverInstall:$false'; break}
          }
 
     Write-Host "Setting the force variable"
     switch -regex ($env:force)
          {
-             "YES|yes" {"$COMMAND += '-Force:$true'"; break}
-             "NO|no"   {"$COMMAND += '-Force:$false'"; break}
-             default   {"$COMMAND += '-Force:$false'"; break}
+             "YES|yes" {$COMMAND += ' -Force:$true'; break}
+             "NO|no"   {$COMMAND += ' -Force:$false'; break}
+             default   {$COMMAND += ' -Force:$false'; break}
          }
 
     #If ([boolean]$purgeUpdates -eq '$true') {
