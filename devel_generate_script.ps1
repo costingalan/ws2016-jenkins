@@ -111,6 +111,13 @@ try {
              default   {$COMMAND += ' -Force:$false'; break}
          }
 
+    Write-Host "Setting the ExtraFeatures variable"
+    switch -regex ($env:installHyperV)
+         {
+             "YES|yes" {$ExtraFeatures += "Microsoft-Hyper-V"; break}
+             "NO|no"   {$ExtraFeatures = $ExtraFeatures -ne "Microsoft-Hyper-V"; break}
+             default   {$ExtraFeatures += "Microsoft-Hyper-V"; break}
+         }
     #If ([boolean]$purgeUpdates -eq '$true') {
     #    If ([boolean]$installUpdates -eq '$false') {
     #        Write-Warning "You have purgeUpdates set to yes but installUpdates is set to no."
